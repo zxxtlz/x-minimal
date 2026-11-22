@@ -1,0 +1,460 @@
+/* ---------- tokens ---------- */
+:root {
+  --xm-bg: #000;
+  --xm-page-bg: linear-gradient(160deg, #262626 0%, #363636 50%, #484848 100%);
+  --xm-panel-radius: 18px;
+  --xm-ink: #e6e6e6;
+  --xm-ink-strong: #fff;
+  --xm-muted: #8b8b8b;
+  --xm-faint: #5f5f5f;
+  --xm-line: #1b1b1b;
+  --xm-hover: #0a0a0a;
+  --xm-radius: 10px;
+  --xm-font: "Geist", "Inter", "SF Pro Text", "Segoe UI Variable Text", system-ui, sans-serif;
+}
+
+/* ---------- base ---------- */
+html { background: var(--xm-page-bg) fixed !important; scrollbar-width: none; }
+body { background: transparent !important; }
+
+/* ---------- sidebar button toggles ----------
+   content.js sets data-xm-hide-* on <html> the moment a switch is flipped, so these rules apply
+   instantly and keep working even when X replaces the sidebar DOM. [data-xm-hidden] is the inline backup. */
+[data-xm-nav][data-xm-hidden] { display: none !important; }
+html[data-xm-hide-home] [data-testid="AppTabBar_Home_Link"] { display: none !important; }
+html[data-xm-hide-explore] [data-testid="AppTabBar_Explore_Link"] { display: none !important; }
+html[data-xm-hide-notifications] [data-testid="AppTabBar_Notifications_Link"] { display: none !important; }
+html[data-xm-hide-messages] [data-testid="AppTabBar_Messages_Link"] { display: none !important; }
+html[data-xm-hide-grok] [data-testid="AppTabBar_Grok_Link"] { display: none !important; }
+html[data-xm-hide-bookmarks] [data-testid="AppTabBar_Bookmarks_Link"] { display: none !important; }
+html[data-xm-hide-communities] [data-testid="AppTabBar_Communities_Link"] { display: none !important; }
+html[data-xm-hide-lists] [data-testid="AppTabBar_Lists_Link"] { display: none !important; }
+html[data-xm-hide-premium] [data-testid="AppTabBar_Premium_Link"] { display: none !important; }
+html[data-xm-hide-profile] [data-testid="AppTabBar_Profile_Link"] { display: none !important; }
+html[data-xm-hide-creatorstudio] [data-testid="AppTabBar_CreatorStudio_Link"],
+html[data-xm-hide-creatorstudio] [data-testid="AppTabBar_Creator_Studio_Link"] { display: none !important; }
+html[data-xm-hide-calls] [data-testid="AppTabBar_Calls_Link"],
+html[data-xm-hide-calls] [data-testid="AppTabBar_Calls"] { display: none !important; }
+html[data-xm-hide-more] [data-testid="AppTabBar_More_Menu"] { display: none !important; }
+
+/* the centred part of the page (nav + feed) is a black panel on the lighter page background:
+   rounded corners, full height, no space above or below */
+#react-root div:has(header[role="banner"]) { background: transparent !important; }
+#react-root div:has(> header[role="banner"]) {
+  background: var(--xm-bg) !important;
+  border-radius: var(--xm-panel-radius) !important;
+  overflow: clip !important;
+  min-height: 100vh !important;
+  margin-inline: auto !important;
+  padding-inline: 28px !important;
+  box-sizing: border-box !important;
+}
+::-webkit-scrollbar { display: none; }
+body *:not(svg):not(svg *) { font-family: var(--xm-font) !important; letter-spacing: 0 !important; }
+body { color: var(--xm-ink); }
+
+/* hairline dividers instead of X's heavy grey ones */
+[data-testid="primaryColumn"] { border-color: transparent !important; }
+[data-testid="cellInnerDiv"] *, [role="tablist"], [role="tablist"] * { border-color: var(--xm-line) !important; }
+
+/* ---------- left nav: text only, lowercase ---------- */
+header[role="banner"] nav a svg,
+header[role="banner"] nav [role="button"] svg { display: none !important; }
+
+header[role="banner"] nav a > div,
+header[role="banner"] nav [role="button"] > div {
+  background: transparent !important;
+  padding: 5px 0 !important;
+  margin: 0 !important;
+}
+header[role="banner"] nav span {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  text-transform: lowercase;
+  color: #a9a9a9 !important;
+}
+header[role="banner"] nav a:hover span,
+header[role="banner"] nav a[aria-current="page"] span { color: var(--xm-ink-strong) !important; }
+
+/* notification / chat counters become plain right-aligned numbers */
+header[role="banner"] nav [aria-live] {
+  position: static !important;
+  background: transparent !important;
+  color: #a9a9a9 !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 0 0 28px !important;
+  border: 0 !important;
+}
+
+/* nav items that aren't in the minimal set */
+header[role="banner"] nav a[href="/i/premium_sign_up"],
+header[role="banner"] nav a[href="/i/verified-orgs-signup"],
+header[role="banner"] nav a[href="/jobs"],
+header[role="banner"] nav a[href$="/communities"],
+header[role="banner"] nav a[href$="/lists"],
+header[role="banner"] nav a[href="/i/connect_people"],
+[data-testid="AppTabBar_More_Menu"] { display: none !important; }
+
+/* "Post" button -> "write" row, and the extension's "search" row below it. With the extension's shortcuts on, the
+   key sits on the right of the same line ("write   n", "search   /"). */
+[data-testid="SideNav_NewTweet_Button"], [data-xm-search] {
+  display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+  align-items: center !important; justify-content: space-between !important;
+  width: 176px !important; max-width: 100% !important; min-width: 0 !important; height: auto !important;
+  padding: 5px 0 !important; background: transparent !important; box-shadow: none !important; border: 0 !important;
+  font-size: 0 !important; text-decoration: none !important; cursor: pointer;
+}
+[data-testid="SideNav_NewTweet_Button"] { margin: 18px 0 0 !important; }
+[data-xm-search] { margin: 0 !important; }
+[data-testid="SideNav_NewTweet_Button"] *, [data-xm-search] * { display: none !important; }
+[data-testid="SideNav_NewTweet_Button"]::before { content: "write" !important; }
+[data-xm-search]::before { content: "search" !important; }
+[data-testid="SideNav_NewTweet_Button"]::before, [data-xm-search]::before { color: #a9a9a9; font-size: 13px; white-space: nowrap; }
+[data-testid="SideNav_NewTweet_Button"]:hover::before, [data-xm-search]:hover::before { color: #fff; }
+html[data-xm-keys] [data-testid="SideNav_NewTweet_Button"]::after { content: "n"; }
+html[data-xm-keys] [data-xm-search]::after { content: "/"; }
+html[data-xm-keys] [data-testid="SideNav_NewTweet_Button"]::after, html[data-xm-keys] [data-xm-search]::after { color: var(--xm-faint); font-size: 13px; margin-left: auto; }
+
+/* the post you selected with w / s */
+article[data-xm-selected] { background: var(--xm-hover) !important; box-shadow: inset 2px 0 0 #e6e6e6 !important; }
+
+/* ---------- sticky top bar ---------- */
+[data-testid="primaryColumn"] > div > div:first-child {
+  background: rgba(0, 0, 0, .8) !important;
+}
+[data-testid="primaryColumn"] h2 span { font-size: 13px !important; font-weight: 500 !important; text-transform: lowercase; color: var(--xm-muted) !important; }
+
+/* ---------- profile ---------- */
+[data-testid^="UserAvatar-Container"],
+[data-testid^="UserAvatar-Container"] :is(div, img, a) { border-radius: 8px !important; }
+[data-testid^="UserAvatar-Container"] :is(div, a) { border-color: transparent !important; }
+
+[data-testid="UserName"] span { font-size: 22px !important; font-weight: 700 !important; }
+[data-testid="UserDescription"], [data-testid="UserDescription"] span { font-size: 14px !important; color: var(--xm-ink) !important; }
+[data-testid="UserProfileHeader_Items"], [data-testid="UserProfileHeader_Items"] * ,
+[data-testid="UserJoinDate"] { font-size: 12.5px !important; color: var(--xm-muted) !important; text-transform: lowercase; }
+
+/* squared-off profile buttons */
+[data-testid="userActions"], [data-testid="sendDM"], [data-testid="editProfileButton"],
+[data-testid$="-follow"], [data-testid$="-unfollow"], [data-testid$="-unblock"] {
+  border-radius: 8px !important;
+  background: transparent !important;
+  border: 1px solid #2c2c2c !important;
+}
+[data-testid$="-follow"], [data-testid$="-unfollow"], [data-testid="editProfileButton"] { text-transform: lowercase; }
+[data-testid$="-follow"] span, [data-testid$="-unfollow"] span, [data-testid="editProfileButton"] span { color: #fff !important; font-size: 13px !important; font-weight: 500 !important; }
+[data-testid$="-unfollow"]:hover { border-color: #444 !important; }
+
+/* tabs: text only, no blue underline */
+[role="tablist"] [role="tab"] { text-transform: lowercase; }
+[role="tablist"] [role="tab"] span { font-size: 13px !important; font-weight: 400 !important; color: var(--xm-faint) !important; }
+[role="tablist"] [role="tab"][aria-selected="true"] span,
+[role="tablist"] [role="tab"]:hover span { color: #fff !important; }
+[role="tablist"] [role="tab"] [style*="rgb(29, 155, 240)"] { background: transparent !important; }
+
+/* ---------- posts ---------- */
+article[data-testid="tweet"] { transition: background-color .12s ease; }
+[data-testid="cellInnerDiv"]:hover article[data-testid="tweet"] { background: var(--xm-hover); }
+
+[data-testid="tweetText"], [data-testid="tweetText"] span {
+  font-size: 13.5px !important;
+  line-height: 1.5 !important;
+  color: var(--xm-ink) !important;
+}
+[data-testid="tweetText"] a, [data-testid="tweetText"] a span {
+  color: var(--xm-ink-strong) !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+[data-testid="tweetText"] a:hover { text-decoration: underline !important; }
+
+[data-testid="User-Name"] span { font-size: 13.5px !important; }
+[data-testid="User-Name"] a[role="link"] span:first-child { font-weight: 600 !important; color: var(--xm-ink-strong) !important; }
+[data-testid="User-Name"] a[href*="/status/"] span,
+[data-testid="User-Name"] div[dir="ltr"] span { font-weight: 400 !important; color: var(--xm-muted) !important; font-size: 12.5px !important; }
+
+/* verified badge: gold instead of blue */
+[data-testid="icon-verified"], [data-testid="icon-verified"] * { color: #e4b83a !important; fill: #e4b83a !important; }
+
+/* media */
+[data-testid="tweetPhoto"], [data-testid="videoPlayer"], [data-testid="card.wrapper"],
+[data-testid="tweetPhoto"] img, [data-testid="card.layoutLarge.media"] {
+  border-radius: var(--xm-radius) !important;
+  overflow: hidden;
+}
+[data-testid="tweetPhoto"], [data-testid="card.wrapper"], [data-testid="videoPlayer"] { border: 1px solid var(--xm-line) !important; }
+
+/* ---------- action row ----------
+   left : "15K likes · 1.6K reposts · 3.4K replies"   (always visible)
+   right: "reply repost like keep share"              (always visible)
+   Nothing inside a button is display:none / display:contents: X anchors the share and repost
+   menus to the icon inside the button, so the icon stays in the layout (zero-size) and the
+   text label is attached to it. */
+article [role="group"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  row-gap: 6px !important;
+  position: relative !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin-top: 8px !important;
+  min-height: 20px;
+}
+article [role="group"] * { position: static !important; }
+article [role="group"] svg { width: 0 !important; height: 0 !important; visibility: hidden !important; }
+article [role="group"] div,
+article [role="group"] button,
+article [role="group"] [role="button"] { background: transparent !important; }
+
+article [role="group"] > * { flex: 0 0 auto !important; width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; }
+article [role="group"] > :has(a[href*="/analytics"]) { display: none !important; }
+
+/* order: likes, reposts, replies on the left; keep + share pushed to the right */
+article [role="group"] > :is([data-testid="like"], [data-testid="unlike"], :has([data-testid="like"], [data-testid="unlike"])) { order: 1; }
+article [role="group"] > :is([data-testid="retweet"], [data-testid="unretweet"], :has([data-testid="retweet"], [data-testid="unretweet"])) { order: 2; }
+article [role="group"] > :is([data-testid="reply"], :has([data-testid="reply"])) { order: 3; }
+article [role="group"] > :is([data-testid="bookmark"], [data-testid="removeBookmark"], :has([data-testid="bookmark"], [data-testid="removeBookmark"])) { order: 6; margin-left: auto !important; }
+article [role="group"] > :is(button[aria-label="Share post"], :has(button[aria-label="Share post"])) { order: 7; }
+
+/* buttons */
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"], [data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) {
+  display: flex !important; align-items: center !important; min-height: 20px; padding: 0 !important; margin: 0 !important;
+}
+/* icon holder, count buttons: this is the box X anchors its menus to. It sits where the text label on the
+   right is, so the repost menu opens right under the "repost" label. It is also the only clickable part. */
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div > div:not(:has([data-testid="app-text-transition-container"])) {
+  position: absolute !important; top: 50%; transform: translateY(-50%);
+  display: flex !important; align-items: center !important;
+  width: auto !important; min-width: 0 !important; height: 20px !important; margin: 0 !important; padding: 0 !important;
+  overflow: visible !important; pointer-events: auto !important; cursor: pointer;
+}
+article [role="group"] [data-testid="reply"] > div > div:not(:has([data-testid="app-text-transition-container"])) { right: 216px; }
+article [role="group"] :is([data-testid="retweet"], [data-testid="unretweet"]) > div > div:not(:has([data-testid="app-text-transition-container"])) { right: 144px; }
+article [role="group"] :is([data-testid="like"], [data-testid="unlike"]) > div > div:not(:has([data-testid="app-text-transition-container"])) { right: 96px; }
+/* icon holder, keep + share: it carries the visible text label */
+article [role="group"] :is([data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) > div > div:not(:has([data-testid="app-text-transition-container"])) {
+  display: flex !important; align-items: center !important; width: auto !important; height: 20px !important; margin: 0 !important; padding: 0 !important; overflow: visible !important;
+}
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div > div:has([data-testid="app-text-transition-container"]) { display: flex !important; align-items: center !important; }
+
+/* left side: counts */
+article [role="group"] [data-testid="app-text-transition-container"] {
+  font-size: 12.5px !important;
+  color: var(--xm-faint) !important;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+article [role="group"] [data-testid="app-text-transition-container"] * { color: inherit !important; font-size: inherit !important; }
+article [role="group"] [data-testid="like"]    [data-testid="app-text-transition-container"]::after,
+article [role="group"] [data-testid="unlike"]  [data-testid="app-text-transition-container"]::after   { content: " likes \00B7"; margin-left: 2px; }
+article [role="group"] [data-testid="retweet"] [data-testid="app-text-transition-container"]::after,
+article [role="group"] [data-testid="unretweet"] [data-testid="app-text-transition-container"]::after { content: " reposts \00B7"; margin-left: 2px; }
+article [role="group"] [data-testid="reply"]   [data-testid="app-text-transition-container"]::after   { content: " replies"; margin-left: 2px; }
+
+/* "liked" state: red dot + word in front of the counts */
+article [role="group"] [data-testid="unlike"] > div > div:has([data-testid="app-text-transition-container"])::before {
+  content: "liked";
+  margin-right: 8px;
+  padding-left: 10px;
+  font-size: 12.5px;
+  color: var(--xm-faint);
+  background: radial-gradient(circle at 3px 50%, #f4212e 2.5px, transparent 3px) no-repeat;
+}
+
+/* right side: text labels, always visible. They live on the icon holder. */
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"], [data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) > div > div:not(:has([data-testid="app-text-transition-container"]))::before {
+  font-size: 12.5px;
+  color: var(--xm-muted);
+  cursor: pointer;
+  opacity: 1;
+  text-align: right;
+  white-space: nowrap;
+  transition: opacity .12s ease, color .12s ease;
+}
+article [role="group"] [data-testid="reply"]     > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "reply";    width: 32px; }
+article [role="group"] [data-testid="retweet"]   > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "repost";   width: 56px; }
+article [role="group"] [data-testid="unretweet"] > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "reposted"; width: 56px; color: var(--xm-ink); }
+article [role="group"] [data-testid="like"]      > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "like";     width: 32px; }
+article [role="group"] [data-testid="unlike"]    > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "liked";    width: 32px; color: var(--xm-ink); }
+article [role="group"] [data-testid="bookmark"]       > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "keep";  margin-left: 16px; width: 30px; }
+article [role="group"] [data-testid="removeBookmark"] > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "kept";  margin-left: 16px; width: 30px; color: var(--xm-ink); }
+article [role="group"] button[aria-label="Share post"] > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "share"; margin-left: 16px; width: 34px; }
+
+article [role="group"] ::before { opacity: 1 !important; }
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="like"], [data-testid="bookmark"], button[aria-label="Share post"]):hover > div > div:not(:has([data-testid="app-text-transition-container"]))::before { color: #fff; }
+
+/* post detail view: the media sits on the left and the post column is narrow, so keep the
+   action labels together instead of pushing "reply" to the far right (which clipped the row) */
+html[data-xm-post] article [role="group"][data-xm-stats] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"], [data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) { margin-left: 12px !important; }
+html[data-xm-post] article [role="group"][data-xm-stats] > :is([data-testid="bookmark"], [data-testid="removeBookmark"], :has([data-testid="bookmark"], [data-testid="removeBookmark"])) { margin-left: 12px !important; }
+
+/* ---------- the stats on the left are plain text: only the labels on the right are buttons ---------- */
+article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) { pointer-events: none !important; }
+
+/* ---------- bounce after you like / repost / keep ----------
+   the extension puts data-xm-pop on the button that just switched to its "done" state */
+@keyframes xm-bounce {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.55); }
+  50%  { transform: scale(.85); }
+  72%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+article [role="group"] :is([data-testid="unlike"], [data-testid="unretweet"], [data-testid="removeBookmark"])[data-xm-pop] > div > div:not(:has([data-testid="app-text-transition-container"]))::before,
+article [role="group"] [data-testid="unlike"][data-xm-pop] > div > div:has([data-testid="app-text-transition-container"])::before {
+  opacity: 1 !important;
+  color: #fff !important;
+  display: inline-block;
+  transform-origin: 70% 50%;
+  animation: xm-bounce .55s cubic-bezier(.3, 1.6, .5, 1) 1;
+}
+
+/* ---------- extension mode ----------
+   the extension draws the numbers itself (data-xm-stats on the row), so X's count text is hidden and every button is
+   just a text label in one even row. Because the buttons no longer hold the numbers, they sit where their labels are:
+   the repost / share menus open right under them. */
+article [role="group"][data-xm-stats] > * { order: 0 !important; }
+article [role="group"][data-xm-stats] > [data-xm-stats-text] {
+  order: -1 !important; display: flex !important; align-items: center !important;
+  font-size: 12.5px; color: var(--xm-faint); white-space: nowrap; pointer-events: none !important; user-select: none;
+}
+article [role="group"][data-xm-stats] [data-xm-stats-text] .xm-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #f4212e; margin-right: 5px; }
+article [role="group"][data-xm-stats] [data-xm-stats-text] .xm-liked { margin-right: 8px; }
+
+article [role="group"][data-xm-stats] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"], [data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) {
+  margin-left: 16px !important; pointer-events: auto !important;
+}
+article [role="group"][data-xm-stats] > :is([data-testid="bookmark"], [data-testid="removeBookmark"], :has([data-testid="bookmark"], [data-testid="removeBookmark"])) { margin-left: 0 !important; }
+article [role="group"][data-xm-stats] > :is([data-testid="reply"], :has([data-testid="reply"])) { margin-left: auto !important; }
+
+article [role="group"][data-xm-stats] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div > div:has([data-testid="app-text-transition-container"]) { display: none !important; }
+article [role="group"][data-xm-stats] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div > div:not(:has([data-testid="app-text-transition-container"])) {
+  position: static !important; transform: none !important; right: auto !important; top: auto !important;
+}
+article [role="group"][data-xm-stats] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"], [data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) > div > div:not(:has([data-testid="app-text-transition-container"]))::before {
+  width: auto !important; margin-left: 0 !important;
+}
+/* ---------- misc cleanup ---------- */
+/* no coloured accent on inline links outside post text */
+a[role="link"][href^="http"] { text-decoration-color: var(--xm-faint); }
+/* reply composer */
+[data-testid="tweetTextarea_0"], .public-DraftEditorPlaceholder-root { font-size: 13.5px !important; }
+
+/* floating grok + chat buttons in the bottom-right corner */
+html:not([data-xm-show-grok]) [data-testid*="grok" i][data-testid*="drawer" i] { display: none !important; }
+html:not([data-xm-show-chat]) [data-testid*="drawer" i]:not([data-testid*="grok" i]),
+html:not([data-xm-show-chat]) button[aria-label="Chat" i]:not(header *):not(main *),
+html:not([data-xm-show-chat]) [role="button"][aria-label="Chat" i]:not(header *):not(main *) { display: none !important; }
+/* the extension tags floating buttons it finds by position (data-xm-float="chat" | "grok") */
+html:not([data-xm-show-chat]) [data-xm-float="chat"], html:not([data-xm-show-grok]) [data-xm-float="grok"] { display: none !important; }
+
+/* ---------- dropdown menus (repost, share, more ...) ---------- */
+#layers [data-testid="Dropdown"], #layers [role="menu"] {
+  background: #0a0a0a !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .7) !important;
+  overflow: hidden;
+}
+#layers [data-testid="Dropdown"], #layers [role="menu"]:not([data-testid="Dropdown"] *) { border: 1px solid #1f1f1f !important; }
+#layers [role="menuitem"] {
+  background: transparent !important;
+  min-height: 0 !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  transition: background-color .1s ease;
+}
+#layers [role="menuitem"]:hover, #layers [role="menuitem"]:focus-visible { background: #151515 !important; }
+#layers [role="menuitem"] svg { display: none !important; }
+#layers [role="menuitem"] span { font-size: 13px !important; font-weight: 400 !important; text-transform: lowercase; }
+
+/* ---------- animated background gradient (extension option): the light band sweeps around the page ---------- */
+@property --xm-angle { syntax: "<angle>"; inherits: false; initial-value: 135deg; }
+@keyframes xm-angle { to { --xm-angle: 495deg; } }
+html[data-xm-gradient] {
+  background: linear-gradient(var(--xm-angle), #1e1e1e 0%, #3a3a3a 22%, #6a6a6a 50%, #3a3a3a 78%, #1e1e1e 100%) fixed !important;
+  animation: xm-angle 12s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { html[data-xm-gradient] { animation: none; } }
+
+/* ---------- rounded panel as a fixed layer (extension): always rounded at the top and bottom of the window ---------- */
+#xm-panel-bg { position: fixed; top: 0; bottom: 0; z-index: -1; background: var(--xm-bg); border-radius: var(--xm-panel-radius); pointer-events: none; }
+html[data-xm-panel-layer] #react-root div:has(> header[role="banner"]) { background: transparent !important; border-radius: 0 !important; overflow: visible !important; }
+
+/* ---------- right sidebar (extension option, off by default) ---------- */
+html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"] { width: 990px !important; }
+html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"] > div,
+html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"] > div > div { max-width: 990px !important; }
+html[data-xm-sidebar]:not([data-xm-chat]) [data-testid="primaryColumn"] { width: 600px !important; max-width: 600px !important; flex: 0 0 600px !important; }
+html[data-xm-sidebar]:not([data-xm-chat]) [data-testid="sidebarColumn"] { display: flex !important; width: 350px !important; margin-left: 24px !important; }
+
+/* ---------- dialogs: "send via chat", compose, and the like ---------- */
+#layers [data-testid="mask"] { background-color: rgba(0, 0, 0, .65) !important; }
+#layers [role="dialog"], #layers [data-testid="sheetDialog"] {
+  background: #0a0a0a !important;
+  border: 1px solid #1f1f1f !important;
+  border-radius: 14px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .7) !important;
+  overflow: hidden;
+}
+#layers [role="dialog"] * { border-color: #1b1b1b !important; }
+#layers [role="dialog"] [role="heading"], #layers [role="dialog"] [role="heading"] span { font-size: 14px !important; font-weight: 500 !important; text-transform: lowercase; color: #e6e6e6 !important; }
+#layers [role="dialog"] input, #layers [role="dialog"] textarea, #layers [role="dialog"] [contenteditable="true"] { font-size: 13px !important; color: #e6e6e6 !important; background: transparent !important; }
+#layers [role="dialog"] div:has(> input[placeholder*="earch"]), #layers [role="dialog"] [role="search"] { background: #111 !important; border: 1px solid #1f1f1f !important; border-radius: 8px !important; }
+#layers [role="dialog"] div:has(> div > input[placeholder*="earch"]) { background: transparent !important; border-radius: 8px !important; }
+#layers [role="dialog"] [role="listitem"]:hover, #layers [role="dialog"] [role="option"]:hover, #layers [role="dialog"] [data-testid="cellInnerDiv"]:hover, #layers [role="dialog"] [data-testid*="onversation"]:hover { background: #141414 !important; }
+#layers [role="dialog"] img[src*="profile_images"], #layers [role="dialog"] :is(div, a):has(> img[src*="profile_images"]), #layers [role="dialog"] div:has(> div > img[src*="profile_images"]), #layers [role="dialog"] [data-testid^="UserAvatar-Container"], #layers [role="dialog"] [data-testid^="UserAvatar-Container"] * { border-radius: 8px !important; }
+/* X's blue becomes light grey; buttons that were blue become light buttons with dark text */
+#layers [role="dialog"] [style*="color: rgb(29, 155, 240)"], #layers [role="dialog"] [style*="color: rgb(29, 155, 240)"] * { color: #e6e6e6 !important; }
+#layers [role="dialog"] [style*="background-color: rgb(29, 155, 240)"], #layers [role="dialog"] [style*="background-color: rgb(15, 20, 25)"] { background-color: #e6e6e6 !important; border-radius: 8px !important; }
+#layers [role="dialog"] [style*="background-color: rgb(29, 155, 240)"] *, #layers [role="dialog"] [style*="background-color: rgb(15, 20, 25)"] * { color: #000 !important; text-transform: lowercase; }
+#layers [role="dialog"] [role="button"][data-testid*="Button"], #layers [role="dialog"] button { border-radius: 8px !important; }
+#layers [role="dialog"] svg[style*="color: rgb(29, 155, 240)"] { color: #e6e6e6 !important; }
+
+html:not([data-xm-chat]) [data-testid="sidebarColumn"] { display: none !important; }
+html:not([data-xm-chat]) div:has(> header[role="banner"]) { justify-content: center !important; width: max-content !important; max-width: 100% !important; flex: 0 0 auto !important; }
+html:not([data-xm-chat]) header[role="banner"] { flex: 0 0 auto !important; width: auto !important; }
+html:not([data-xm-chat]) main[role="main"] {
+  flex: 0 0 auto !important;
+  width: 620px !important;
+  max-width: 100% !important;
+  margin-left: 56px !important;
+}
+html:not([data-xm-chat]) main[role="main"] > div, html:not([data-xm-chat]) main[role="main"] > div > div { width: 100% !important; max-width: 620px !important; }
+html:not([data-xm-chat]) [data-testid="primaryColumn"] { margin: 0 !important; width: 100% !important; max-width: 620px !important; }
+html[data-xm-chat] header[role="banner"] { width: 220px !important; flex: 0 0 220px !important; align-items: flex-start !important; justify-content: flex-start !important; }
+html[data-xm-chat] header[role="banner"], html[data-xm-chat] header[role="banner"] * { overflow: visible !important; }
+html[data-xm-chat] header[role="banner"] div { align-items: flex-start !important; }
+html[data-xm-chat] header[role="banner"], html[data-xm-chat] header[role="banner"] div:has(nav), html[data-xm-chat] header[role="banner"] nav { pointer-events: none !important; }
+html[data-xm-chat] header[role="banner"] :is(a, button, [role="button"], [role="menuitem"], input) { pointer-events: auto !important; }
+html[data-xm-chat] header[role="banner"] nav a { display: flex !important; flex-direction: row !important; align-items: center !important; width: max-content !important; min-width: 140px !important; height: 36px !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; }
+html[data-xm-chat] header[role="banner"] nav a span { font-size: 0 !important; }
+html[data-xm-chat] header[role="banner"] nav a [aria-live], html[data-xm-chat] header[role="banner"] nav a [aria-live] span { font-size: 13px !important; }
+html[data-xm-chat] header[role="banner"] nav a::before { content: attr(aria-label); font-size: 13px; color: #a9a9a9; margin-left: 19px; white-space: nowrap; text-transform: lowercase; }
+html[data-xm-chat] header[role="banner"] nav a:hover::before, html[data-xm-chat] header[role="banner"] nav a[aria-current="page"]::before { color: #fff; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="AppTabBar_Home_Link"]::before { content: "home"; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="AppTabBar_Explore_Link"]::before { content: "explore"; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="AppTabBar_Notifications_Link"]::before { content: "notifications"; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="AppTabBar_DirectMessage_Link"]::before { content: "chat"; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="AppTabBar_Profile_Link"]::before { content: "profile"; }
+html[data-xm-chat] main[role="main"] [role="heading"], html[data-xm-chat] main[role="main"] [role="heading"] span { font-size: 14px !important; font-weight: 500 !important; text-transform: lowercase; color: #e6e6e6 !important; }
+html[data-xm-chat] main[role="main"] img[src*="profile_images"], html[data-xm-chat] main[role="main"] :is(div, a):has(> img[src*="profile_images"]), html[data-xm-chat] main[role="main"] div:has(> div > img[src*="profile_images"]), html[data-xm-chat] main[role="main"] div[style*="profile_images"] { border-radius: 8px !important; }
+html[data-xm-chat] main[role="main"] input, html[data-xm-chat] main[role="main"] [contenteditable="true"] { font-size: 13px !important; color: #e6e6e6 !important; }
+html[data-xm-chat] main[role="main"] div:has(> input[placeholder*="earch"]), html[data-xm-chat] main[role="main"] [role="search"] { background: transparent !important; border: 1px solid #1b1b1b !important; border-radius: 8px !important; }
+html[data-xm-chat] main[role="main"] div:has(> div > input[placeholder*="earch"]) { background: transparent !important; border-radius: 8px !important; }
+html[data-xm-chat] main[role="main"] [data-testid="cellInnerDiv"]:hover, html[data-xm-chat] main[role="main"] [data-testid*="onversation"]:hover { background: #0a0a0a !important; }
+html[data-xm-chat] main[role="main"] [aria-haspopup="menu"], html[data-xm-chat] main[role="main"] [aria-label*="ew chat"], html[data-xm-chat] main[role="main"] [aria-label*="ew message"] { border-radius: 8px !important; border: 1px solid #2c2c2c !important; background: transparent !important; }
+html[data-xm-chat] main[role="main"] [style*="background-color: rgb(29, 155, 240)"] { background-color: #e6e6e6 !important; border-radius: 12px !important; }
+html[data-xm-chat] main[role="main"] [style*="background-color: rgb(29, 155, 240)"] * { color: #000 !important; }
+html[data-xm-chat] main[role="main"] [style*="background-color: rgb(47, 51, 54)"], html[data-xm-chat] main[role="main"] [style*="background-color: rgb(32, 35, 39)"] { background-color: #111 !important; border-radius: 12px !important; }
+html[data-xm-chat] [data-testid^="dmComposerTextInput"] { background: #0a0a0a !important; border-radius: 8px !important; }
+html[data-xm-chat] [data-testid="dmComposerSendButton"] { border-radius: 8px !important; }
+html[data-xm-chat] div:has(> header[role="banner"]) { width: 100% !important; max-width: 1280px !important; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="SideNav_NewTweet_Button"]::before { content: "write" !important; }
+html[data-xm-chat] header[role="banner"] nav a[data-testid="SideNav_NewTweet_Button"] { width: 176px !important; margin-left: 0 !important; }
+html[data-xm-photo] #layers [role="dialog"] img, html[data-xm-photo] #layers img[src*="profile_images"] { border-radius: 0 !important; clip-path: none !important; }
+html[data-xm-photo] #layers :is(div, a):has(> img), html[data-xm-photo] #layers div:has(> div > img), html[data-xm-photo] #layers div:has(> div > div > img) { border-radius: 0 !important; clip-path: none !important; }
+html[data-xm-photo] #layers [data-testid^="UserAvatar-Container"], html[data-xm-photo] #layers [data-testid^="UserAvatar-Container"] * { border-radius: 0 !important; clip-path: none !important; }
+html[data-xm-photo] #layers div[style*="profile_images"] { border-radius: 0 !important; clip-path: none !important; }
