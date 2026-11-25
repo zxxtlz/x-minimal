@@ -1,33 +1,18 @@
-# X minimal
+# X minimal (Firefox / LibreWolf extension)
 
-A minimal black, text-only skin for x.com (chat included), with the browser's own video player, an OldTwitter-style
-image gallery, keyboard shortcuts, bounce animations and an in-page options panel.
-
-[**Install X minimal from addons.mozilla.org**](https://addons.mozilla.org/en-US/firefox/addon/x-minimal-theme/)
-
-## Features
-
-- Minimal black, text-only layout for the timeline, chat, profile and post pages
-- Native `<video controls>` player for X videos and GIFs (right-click → open in new tab / save as / picture-in-picture)
-- Full-screen image gallery with zoom, pan and keyboard navigation
-- OldTwitter-style keyboard shortcuts (disabled in chat, dialogs and text fields)
-- Live toggles for every sidebar button and the other appearance options
-- Options panel built into the x.com sidebar, plus the standard add-on preferences page
+Minimal black, text-only skin for x.com (chat page included), the browser's own video player, bounce animations
+and an options panel.
 
 ## Install
-
-- **Recommended:** [install the signed extension from AMO](https://addons.mozilla.org/en-US/firefox/addon/x-minimal-theme/).
-- **From source:** `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on...** → pick `manifest.json`.
+- Try it: `about:debugging#/runtime/this-firefox` -> **Load Temporary Add-on...** -> pick `manifest.json` (or the zip).
   Temporary add-ons disappear when the browser closes.
+- Keep it: sign it as "unlisted" on addons.mozilla.org, then open the signed .xpi in the browser.
 
-Turn off any Stylus style or Violentmonkey script you may have installed for x.com first — otherwise everything loads
-twice.
+Turn off the Stylus style and the Violentmonkey scripts for x.com first, otherwise everything loads twice.
 
 ## Options
-
 Click **options** in the x.com sidebar (under "profile"), or open the add-on's preferences in `about:addons`.
 Changes apply straight away.
-
 - animate the background gradient (on/off)
 - show the right sidebar (search, trends, who to follow)
 - show the floating chat button / floating grok button
@@ -43,11 +28,9 @@ Changes apply straight away.
   they wrap instead of clipping at the edge
 
 ## Keyboard shortcuts (like OldTwitter)
-
 They work when you are not typing in a text box, in chat (/i/chat, /messages), in a dialog or menu, in the options
 panel or in an image gallery. Physical keys are used, so they also work on a cyrillic layout. Handled keys never reach
 X's own shortcuts.
-
 - `w` / `s` select the previous / next post (the selected post gets a thin bar on its left); if it has a video the video
   starts playing (option: "play a post's video as soon as you select it")
 - `space` plays / pauses the selected post's video; on a post with only photos it opens a full-size image gallery,
@@ -56,48 +39,28 @@ X's own shortcuts.
   an image to zoom anywhere from 20% (500% zoomed out) to 800%; drag the picture to move your view of it as far as
   you like — there is no limit and nothing is clipped. The browser's native "drag the image file" gesture is disabled
   so the drag pans the view instead. The timeline behind the gallery cannot be scrolled (wheel, touch or scroll keys)
-  while it is open. The side arrows are overlay buttons and no longer take up space. Clicking an image shows the next
-  one. Images are loaded at their original resolution when X provides one, with smaller sizes as a fallback.
+  while it is open, and your exact scroll position is preserved — opening or closing the gallery never jumps you back
+  to the top of the page. The side arrows are overlay buttons and no longer take up space. Clicking an image shows the
+  next one. Images are loaded at their original resolution when X provides one, with smaller sizes as a fallback.
 - clicking a photo in **any** post that has only images opens that gallery directly — the post does not need to be
   selected. The post **never** opens from its images; click the post text, timestamp or buttons to open it.
 - `l` like, `b` keep (bookmark), `t` repost (opens the repost menu), `r` reply
 - `/` search (focuses the search box, or opens the explore page first), `n` write a post
 - no shortcut fires in chat, so `w`, `s`, `/`, `n` etc. are all free for typing messages
-
 The sidebar shows the keys: `write  n` and `search  /` (option: "show the shortcut keys in the sidebar").
 
 ## Video
-
 For every video X shows, `main.js` finds the plain .mp4 files in X's own data and lays an ordinary
-`<video controls>` over X's player: right-click → open in new tab / save as / picture-in-picture all work.
+`<video controls>` over X's player: right-click -> open in new tab / save as / picture-in-picture all work.
 Videos never autoplay (press play). X's own player is never modified: if a video cannot be matched, or the mp4 fails
 to load, you simply get X's player.
-
 GIFs are shown as videos too: a looping, muted, auto-starting `<video controls>`, so they have the video controls
 (option: "show gifs as videos").
-
 Videos pause when they scroll out of view (option: "pause videos when they scroll out of view"); gifs start again when
 they come back. Videos in picture-in-picture or fullscreen are never paused.
 
 ## Files
-
-- `theme.css` — the skin (layout rules switch off on chat pages, profile photo viewer is square)
-- `main.js` — runs in the page: route flags, bounce, copy link, floating buttons, native video player, image gallery
-- `content.js`, `xm-settings.js` — settings, the sidebar "options" item and the panel
-- `options.html`, `options.js` — the same panel as an add-on preferences page
-- `guide.png`, `icons/` — the options-panel guide and the extension icons
-
-## Building the .xpi
-
-The extension has no build step. From this directory:
-
-```sh
-zip -r x-minimal.xpi manifest.json options.html options.js xm-settings.js \
-  content.js main.js theme.css README.md guide.png icons/icon48.png icons/icon96.png
-```
-
-Lint it with `npx web-ext lint --source-dir=.`.
-
-## License
-
-[MIT](LICENSE)
+- `theme.css` - the skin (layout rules switch off on chat pages, profile photo viewer is square)
+- `main.js` - runs in the page: route flags, bounce, copy link, floating buttons, native video player
+- `content.js`, `xm-settings.js` - settings, the sidebar "options" item and the panel
+- `options.html`, `options.js` - the same panel as an add-on preferences page

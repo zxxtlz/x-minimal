@@ -328,13 +328,24 @@
     list.push(src);
     return Array.from(new Set(list));
   }
+  // Lock the page in place without touching overflow: on Firefox, toggling overflow on <html>/<body> makes the
+  // document scroll back to the top. Wheel / touch / key scrolling is already swallowed separately, so all we need
+  // here is to pin the exact scroll offset for the whole time the gallery is open.
+  let lockedScroll = null;
+  function pinScroll() {
+    if (!gallery || !lockedScroll) return;
+    if (window.scrollX !== lockedScroll.x || window.scrollY !== lockedScroll.y) {
+      window.scrollTo(lockedScroll.x, lockedScroll.y);
+    }
+  }
+  addEventListener('scroll', pinScroll, { passive: true });
+
   function closeGallery() {
     if (!gallery) return;
     gallery.overlay.remove();
     gallery = null;
+    lockedScroll = null;
     root.removeAttribute('data-xm-gallery-open');
-    document.documentElement.style.removeProperty('overflow');
-    document.body.style.removeProperty('overflow');
   }
   function showGallery(article, start) {
     const items = galleryUrls(article);
@@ -360,10 +371,9 @@
     body.append(prev, img, next);
     const thumbs = document.createElement('div'); thumbs.className = 'xm-gallery-thumbs';
     overlay.append(head, body, thumbs);
+    lockedScroll = { x: window.scrollX || 0, y: window.scrollY || 0 };
     (document.body || root).appendChild(overlay);
     root.setAttribute('data-xm-gallery-open', '1');
-    document.documentElement.style.setProperty('overflow', 'hidden', 'important');
-    document.body.style.setProperty('overflow', 'hidden', 'important');
 
     const state = { overlay, img, counter, thumbs, items, urls: items.map((x) => variants(x.src)),
       index: start || 0, variant: 0, zoom: 1, tx: 0, ty: 0 };
@@ -472,16 +482,30 @@
     if (t.tagName === 'IMG' && /^https:\/\/pbs\.twimg\.com\/media\//i.test(t.currentSrc || t.src || '')) return t;
     return null;
   }
+  function galleryArticleFor(t) {
+    const photo = clickedPhoto(t);
+    if (!photo) return null;
+    const article = photo.closest('article[data-testid="tweet"]');
+    if (!article || article.querySelector('video')) return null; // video posts keep X's own behaviour
+    return galleryUrls(article).length ? article : null;
+  }
+  // X starts its client-side navigation on pointerdown/mousedown — before our click handler runs — and that
+  // navigation scrolls the timeline to the top. Stop those events on gallery photos (without preventing the click).
+  for (const type of ['pointerdown', 'mousedown']) {
+    addEventListener(type, (e) => {
+      if (gallery || root.hasAttribute('data-xm-gallery-open')) return;
+      if (!galleryArticleFor(e.target)) return;
+      e.stopImmediatePropagation();
+    }, true);
+  }
   addEventListener('click', (e) => {
     if (gallery || root.hasAttribute('data-xm-gallery-open')) return;
+    const article = galleryArticleFor(e.target);
+    if (!article) return;
     const photo = clickedPhoto(e.target);
-    if (!photo) return;
-    const article = photo.closest('article[data-testid="tweet"]');
-    if (!article || article.querySelector('video')) return; // video posts keep X's own behaviour
-    const items = galleryUrls(article);
-    if (!items.length) return;
     const clicked = photo.querySelector ? photo.querySelector('img') : photo;
     const id = clicked && mediaId(clicked.currentSrc || clicked.src || '');
+    const items = galleryUrls(article);
     const i = Math.max(0, items.findIndex((x) => x.id === id));
     e.preventDefault();
     e.stopImmediatePropagation();
