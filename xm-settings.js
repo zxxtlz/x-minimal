@@ -152,6 +152,15 @@
     .guide-lightbox img { max-width: 100%; max-height: calc(100vh - 76px); width: auto; height: auto; object-fit: contain;
       border-radius: 4px; box-shadow: 0 12px 60px rgba(0,0,0,.85); cursor: default; }
     .guide-lightbox-hint { font-size: 11.5px; color: #777; text-transform: lowercase; }
+    @media (max-width: 620px) {
+      .overlay { padding: 8px; }
+      .panel { max-height: 100%; border-radius: 8px; padding: 14px; }
+      .row { gap: 8px; font-size: 12px; flex-wrap: wrap; }
+      .row label { flex: 1 1 100%; }
+      select, input[type=text] { min-width: 0; width: 100%; }
+      .guide img { width: min(200px, 70%); }
+      .guide-lightbox { padding: 10px; }
+    }
   `;
 
   function renderPanel(container, opts) {

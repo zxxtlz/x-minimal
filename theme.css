@@ -458,3 +458,80 @@ html[data-xm-photo] #layers [role="dialog"] img, html[data-xm-photo] #layers img
 html[data-xm-photo] #layers :is(div, a):has(> img), html[data-xm-photo] #layers div:has(> div > img), html[data-xm-photo] #layers div:has(> div > div > img) { border-radius: 0 !important; clip-path: none !important; }
 html[data-xm-photo] #layers [data-testid^="UserAvatar-Container"], html[data-xm-photo] #layers [data-testid^="UserAvatar-Container"] * { border-radius: 0 !important; clip-path: none !important; }
 html[data-xm-photo] #layers div[style*="profile_images"] { border-radius: 0 !important; clip-path: none !important; }
+/* ---------- narrow windows ---------- */
+@media (max-width: 900px) {
+  :root { --xm-panel-radius: 10px; }
+  #react-root div:has(> header[role="banner"]) { padding-inline: 10px !important; }
+  #xm-panel-bg { border-radius: 10px !important; }
+  html:not([data-xm-chat]) main[role="main"] { margin-left: 14px !important; }
+  header[role="banner"] nav a, header[role="banner"] nav [role="button"] { max-width: 110px !important; }
+  header[role="banner"] nav span { font-size: 12px !important; }
+  [data-testid="SideNav_NewTweet_Button"], [data-xm-search] { width: 110px !important; }
+  html[data-xm-sidebar]:not([data-xm-chat]) [data-testid="sidebarColumn"] { display: none !important; }
+  html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"],
+  html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"] > div,
+  html[data-xm-sidebar]:not([data-xm-chat]) main[role="main"] > div > div { width: 100% !important; max-width: 620px !important; }
+}
+
+@media (max-width: 620px) {
+  :root { --xm-panel-radius: 0px; }
+  #react-root div:has(> header[role="banner"]) { padding-inline: 0 !important; }
+  #xm-panel-bg { border-radius: 0 !important; }
+
+  /* turn the left column into a compact horizontal bar across the top */
+  html:not([data-xm-chat]) div:has(> header[role="banner"]) {
+    display: block !important; width: 100% !important; max-width: 100% !important;
+  }
+  html:not([data-xm-chat]) header[role="banner"] {
+    position: sticky !important; top: 0 !important; z-index: 20 !important;
+    width: 100% !important; flex: none !important; background: var(--xm-bg) !important;
+    border-bottom: 1px solid var(--xm-line) !important;
+  }
+  header[role="banner"] nav {
+    display: flex !important; flex-direction: row !important; align-items: center !important;
+    gap: 14px !important; width: 100% !important; height: auto !important;
+    padding: 6px 10px !important; overflow-x: auto !important; overflow-y: hidden !important;
+    scrollbar-width: none !important; box-sizing: border-box !important;
+  }
+  header[role="banner"] nav::-webkit-scrollbar { display: none !important; }
+  header[role="banner"] nav a, header[role="banner"] nav [role="button"] {
+    flex: 0 0 auto !important; width: auto !important; max-width: none !important;
+    height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important;
+  }
+  header[role="banner"] nav span { font-size: 12px !important; white-space: nowrap !important; }
+  header[role="banner"] nav [aria-live] { padding: 0 0 0 3px !important; }
+  [data-testid="SideNav_NewTweet_Button"], [data-xm-search] {
+    display: inline-flex !important; width: auto !important; margin: 0 !important; gap: 6px !important;
+  }
+  [data-testid="SideNav_NewTweet_Button"]::before, [data-xm-search]::before { font-size: 12px !important; }
+  html[data-xm-keys] [data-testid="SideNav_NewTweet_Button"]::after,
+  html[data-xm-keys] [data-xm-search]::after { margin-left: 3px !important; font-size: 11px !important; }
+
+  html:not([data-xm-chat]) main[role="main"] {
+    margin: 0 !important; width: 100% !important; max-width: 100% !important;
+  }
+  html:not([data-xm-chat]) main[role="main"] > div,
+  html:not([data-xm-chat]) main[role="main"] > div > div,
+  html:not([data-xm-chat]) [data-testid="primaryColumn"] { max-width: 100% !important; width: 100% !important; }
+
+  /* action row: drop counts, keep the labels, tighten everything */
+  article [role="group"] [data-testid="app-text-transition-container"] { display: none !important; }
+  article [role="group"] :is([data-testid="unlike"]) > div > div:has([data-testid="app-text-transition-container"])::before { padding-left: 8px !important; }
+  /* the clickable holders use absolute right-offsets sized for a wide row; flow them inline instead */
+  article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div > div:not(:has([data-testid="app-text-transition-container"])) {
+    position: static !important; right: auto !important; transform: none !important;
+  }
+  article [role="group"] :is([data-testid="reply"], [data-testid="retweet"], [data-testid="unretweet"], [data-testid="like"], [data-testid="unlike"]) > div {
+    display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  }
+  article [role="group"] [data-testid="reply"] > div > div:not(:has([data-testid="app-text-transition-container"]))::before { content: "reply" !important; width: auto !important; }
+  article [role="group"] :is([data-testid="retweet"], [data-testid="unretweet"]) > div > div:not(:has([data-testid="app-text-transition-container"]))::before { width: auto !important; }
+  article [role="group"] :is([data-testid="bookmark"], [data-testid="removeBookmark"], button[aria-label="Share post"]) > div > div:not(:has([data-testid="app-text-transition-container"]))::before { margin-left: 8px !important; width: auto !important; font-size: 11px !important; }
+
+  html[data-xm-chat] div:has(> header[role="banner"]) { display: block !important; width: 100% !important; }
+  html[data-xm-chat] header[role="banner"] { position: static !important; width: 100% !important; flex: none !important; }
+  html[data-xm-chat] header[role="banner"] nav a { min-width: 0 !important; }
+
+  #layers [role="dialog"], #layers [data-testid="sheetDialog"] { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
+  #xm-panel-bg { left: 0 !important; width: 100% !important; }
+}

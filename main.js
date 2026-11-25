@@ -280,6 +280,18 @@
       transition: opacity .15s, border-color .15s, transform .15s; }
     .xm-gallery-thumb:hover { opacity: .8; transform: translateY(-2px); }
     .xm-gallery-thumb[data-active] { opacity: 1; border-color: var(--xm-ink); }
+    @media (max-width: 620px) {
+      .xm-gallery-head { padding: 10px 10px 6px; gap: 8px; }
+      .xm-gallery-head > span:first-child { font-size: 10px !important; letter-spacing: 0 !important;
+        max-width: 60%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+      .xm-gallery-head button { padding: 5px 8px; font-size: 10px; }
+      .xm-gallery-body { padding: 0; }
+      .xm-gallery-nav { width: 34px; height: 50px; margin-top: -25px; font-size: 22px; opacity: .8; }
+      .xm-gallery-nav[data-side="prev"] { left: 2px; }
+      .xm-gallery-nav[data-side="next"] { right: 2px; }
+      .xm-gallery-thumbs { gap: 5px; padding: 8px 10px 12px; }
+      .xm-gallery-thumb { width: 40px; height: 40px; }
+    }
   `;
   let galleryStyle = null;
   let gallery = null;
@@ -384,8 +396,8 @@
       state.img.style.transform = 'translate(' + state.tx + 'px,' + state.ty + 'px) scale(' + state.zoom + ')';
     }
     function updateCounter() {
-      state.counter.textContent = 'image ' + (state.index + 1) + ' / ' + state.items.length +
-        '   \u00b7   ' + Math.round(state.zoom * 100) + '%   \u00b7   scroll to zoom, drag to move   \u00b7   \u2190 \u2192 or a / d browse';
+      state.counter.textContent = 'image ' + (state.index + 1) + '/' + state.items.length +
+        ' \u00b7 ' + Math.round(state.zoom * 100) + '% \u00b7 scroll zoom \u00b7 drag move \u00b7 \u2190 \u2192 a / d';
     }
     function resetView() { state.zoom = 1; state.tx = 0; state.ty = 0; applyTransform(); updateCounter(); }
 

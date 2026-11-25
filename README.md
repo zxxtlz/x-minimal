@@ -3,10 +3,15 @@
 Minimal black, text-only skin for x.com (chat page included), the browser's own video player, bounce animations
 and an options panel.
 
+[**Install X minimal from addons.mozilla.org**](https://addons.mozilla.org/en-US/firefox/addon/x-minimal-theme/)
+
+Narrow windows are supported: the sidebar becomes a compact scrollable top bar, the feed goes
+full width, and post action rows, the gallery and the options panel all compact themselves.
+
 ## Install
-- Try it: `about:debugging#/runtime/this-firefox` -> **Load Temporary Add-on...** -> pick `manifest.json` (or the zip).
-  Temporary add-ons disappear when the browser closes.
-- Keep it: sign it as "unlisted" on addons.mozilla.org, then open the signed .xpi in the browser.
+- **Recommended:** [install the signed extension from AMO](https://addons.mozilla.org/en-US/firefox/addon/x-minimal-theme/).
+- Try it from source: `about:debugging#/runtime/this-firefox` -> **Load Temporary Add-on...** -> pick `manifest.json`
+  (or download the source ZIP from Releases). Temporary add-ons disappear when the browser closes.
 
 Turn off the Stylus style and the Violentmonkey scripts for x.com first, otherwise everything loads twice.
 
