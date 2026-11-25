@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X minimal",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "Minimal black, text-only skin for x.com: themed chat, native video + gif players, keyboard shortcuts, bounce animations and an options panel.",
   "icons": {
     "48": "icons/icon48.png",

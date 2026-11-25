@@ -36,10 +36,11 @@ Changes apply straight away.
 They work when you are not typing in a text box, in chat (/i/chat, /messages), in a dialog or menu, in the options
 panel or in an image gallery. Physical keys are used, so they also work on a cyrillic layout. Handled keys never reach
 X's own shortcuts.
-- `w` / `s` select the previous / next post (the selected post gets a thin bar on its left); if it has a video the video
-  starts playing (option: "play a post's video as soon as you select it")
-- `space` plays / pauses the selected post's video; on a post with only photos it opens a full-size image gallery,
-  `enter` opens the post
+- `w` / `s` select the previous / next post (the selected post gets a thin bar on its left) and move keyboard focus to
+  that post's video controls; if it has a video the video starts playing (option: "play a post's video as soon as you
+  select it")
+- `space` plays / pauses the video you are currently looking at (the one `w` / `s` just focused), never one from an
+  older post; on a post with only photos it opens a full-size image gallery, `enter` opens the post
 - in the gallery: `left` / `right` or `a` / `d` (and `space`) browse the photos, `esc` closes it. Scroll the wheel over
   an image to zoom anywhere from 20% (500% zoomed out) to 800%; drag the picture to move your view of it as far as
   you like — there is no limit and nothing is clipped. The browser's native "drag the image file" gesture is disabled

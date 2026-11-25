@@ -253,6 +253,18 @@
     return Math.max(0, Math.min(r.bottom, h) - Math.max(r.top, 0)) / Math.max(1, Math.min(r.height, h));
   }
   const videoOf = (a) => a && (a.querySelector('video[data-xm-own]') || a.querySelector('video'));
+  // The video the user is actually looking at / controlling. When a video's native controls have focus, use that
+  // one; otherwise fall back to the post selected with w / s. This stops space from pausing a video 2 posts above.
+  const focusedVideo = () => {
+    const t = document.activeElement;
+    return t && t.tagName === 'VIDEO' && t.isConnected ? t : null;
+  };
+  // Native <video controls> are focusable with tabindex, but some sites remove it; keep ours reachable.
+  function makeFocusable(v) {
+    if (!v) return;
+    if (!v.hasAttribute('tabindex')) v.setAttribute('tabindex', '0');
+    v.setAttribute('data-xm-focusable', '1');
+  }
   function imagesOf(a) {
     if (!a) return [];
     const photos = a.querySelectorAll('[data-testid="tweetPhoto"] img');
@@ -274,9 +286,17 @@
     selected = el;
     el.setAttribute('data-xm-selected', '1');
     el.scrollIntoView({ block: 'center' });
-    if (settings.playSelectedVideo) {
-      const v = videoOf(el);
-      if (v && v.paused) { v.removeAttribute('data-xm-autopaused'); play(v); }
+    const v = videoOf(el);
+    if (v) {
+      makeFocusable(v);
+      v.focus({ preventScroll: true });
+    } else if (focusedVideo()) {
+      // the post we moved to has no video: don't leave an older video's controls focused
+      document.activeElement.blur();
+    }
+    if (settings.playSelectedVideo && v && v.paused) {
+      v.removeAttribute('data-xm-autopaused');
+      play(v);
     }
   }
   function move(dir) {
@@ -320,6 +340,8 @@
   }
   const overlayOpen = () => !!document.querySelector('#layers [role="dialog"], #layers [aria-modal="true"], #layers [role="menu"]');
   const onInteractive = (t) => !!(t && t.closest && t.closest('a[href], button, [role="button"], [role="link"], [role="menuitem"], video'));
+  // w / s now leaves the video's controls focused; that video must not count as a "typing/interactive" target.
+  const blockedTarget = (t) => onInteractive(t) && t !== focusedVideo();
 
   window.addEventListener('keydown', (e) => {
     // no shortcuts while typing, in chat, in a dialog/menu, in our options panel, in the guide lightbox or in the gallery
@@ -336,21 +358,32 @@
     else if (e.key === '/' || code === 'Slash') { if (e.repeat) return; focusSearch(); }
     else if (code === 'KeyN') { if (e.repeat) return; newPost(); }
     else if (code === 'Space' || code === 'Enter') {
-      const a = current();
-      if (!a || e.repeat) return;
+      if (e.repeat) return;
       if (code === 'Space') {
-        const v = videoOf(a);
-        if (v) {
-          if (onInteractive(e.target)) return;
-          if (v.paused) { v.removeAttribute('data-xm-autopaused'); play(v); } else v.pause();
-        } else if (imagesOf(a).length && !a.querySelector('video')) {
-          // a focused tweet wrapper is [role="link"]: don't let it swallow space here
-          if (e.target && e.target.closest && e.target.closest('a[href], button, [role="button"], [role="menuitem"], video')) return;
-          // bubbles: true so the event reaches the page-world listener in main.js
-          document.dispatchEvent(new CustomEvent('xm-open-gallery', { bubbles: true }));
-        } else return;                                               // no media: let the page scroll as usual
+        // Space controls the video whose controls are focused — i.e. the one w / s just moved to — not whichever
+        // post happens to still carry the selected marker.
+        const fv = focusedVideo();
+        if (fv) {
+          if (blockedTarget(e.target)) return;
+          if (fv.paused) { fv.removeAttribute('data-xm-autopaused'); play(fv); } else fv.pause();
+        } else {
+          const a = current();
+          if (!a) return;
+          const v = videoOf(a);
+          if (v) {
+            if (blockedTarget(e.target)) return;
+            if (v.paused) { v.removeAttribute('data-xm-autopaused'); play(v); } else v.pause();
+          } else if (imagesOf(a).length && !a.querySelector('video')) {
+            // a focused tweet wrapper is [role="link"]: don't let it swallow space here
+            if (e.target && e.target.closest && e.target.closest('a[href], button, [role="button"], [role="menuitem"], video')) return;
+            // bubbles: true so the event reaches the page-world listener in main.js
+            document.dispatchEvent(new CustomEvent('xm-open-gallery', { bubbles: true }));
+          } else return;                                             // no media: let the page scroll as usual
+        }
       } else {
-        if (onInteractive(e.target)) return;
+        const a = current();
+        if (!a) return;
+        if (blockedTarget(e.target)) return;
         openPost(a);
       }
     } else if (code === 'KeyL' || code === 'KeyB' || code === 'KeyT' || code === 'KeyR') {
